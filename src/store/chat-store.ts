@@ -47,6 +47,7 @@ interface ChatState {
   addDocument: (document: PDFDocument) => void;
   removeDocument: (documentId: string) => void;
   setCurrentDocument: (document: PDFDocument | null) => void;
+  syncDocuments: () => Promise<void>; // New action to sync with server
 
   addMessage: (message: Omit<Message, "id" | "timestamp">) => void;
   clearMessages: () => void;
@@ -89,6 +90,22 @@ export const useChatStore = create<ChatState>()(
 
       setCurrentDocument: (document) => {
         set({ currentDocument: document });
+      },
+
+      // Sync documents with server
+      syncDocuments: async () => {
+        try {
+          const response = await fetch("/api/documents");
+          const data = await response.json();
+
+          if (data.success) {
+            set({ documents: data.documents });
+          } else {
+            console.error("Failed to sync documents:", data.error);
+          }
+        } catch (error) {
+          console.error("Error syncing documents:", error);
+        }
       },
 
       // Chat actions

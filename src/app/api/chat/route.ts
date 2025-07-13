@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { serverChatbot, ChatResponse } from "../../../lib/server-chatbot";
+import { sessionChatbot, ChatResponse } from "../../../lib/session-chatbot";
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,9 +14,8 @@ export async function POST(request: NextRequest) {
 
     console.log(`Processing chat message: ${message}`);
 
-    // Use the real AI chatbot with LangChain + Ollama
-    // Let Next.js handle timeouts naturally
-    const response: ChatResponse = await serverChatbot.chat(message);
+    // Use the session-based AI chatbot with LangChain + Ollama
+    const response: ChatResponse = await sessionChatbot.chat(message);
 
     return NextResponse.json({
       success: true,

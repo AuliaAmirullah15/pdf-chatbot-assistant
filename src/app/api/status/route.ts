@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { serverChatbot } from "../../../lib/server-chatbot";
+import { sessionChatbot } from "../../../lib/session-chatbot";
 
 export async function GET(request: NextRequest) {
   try {
-    const status = await serverChatbot.getSystemStatus();
+    const status = await sessionChatbot.getSystemStatus();
 
     return NextResponse.json({
       success: true,

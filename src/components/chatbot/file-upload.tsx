@@ -15,7 +15,7 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onFileSelect }) => {
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
-  const { addDocument, addMessage } = useChatStore();
+  const { addDocument, addMessage, syncDocuments } = useChatStore();
 
   const handleFileSelect = (file: File) => {
     if (file.type !== "application/pdf") {
@@ -51,6 +51,9 @@ export const FileUpload: React.FC<FileUploadProps> = ({ onFileSelect }) => {
 
     // Add to store
     addDocument(documentForStore);
+
+    // Sync with server to ensure consistency
+    syncDocuments();
 
     // Add system message about successful upload
     addMessage({

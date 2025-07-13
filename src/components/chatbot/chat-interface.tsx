@@ -89,12 +89,24 @@ export const ChatInterface: React.FC = () => {
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { messages, addMessage, isLoading, setLoading, error, setError } =
-    useChatStore();
+  const {
+    messages,
+    addMessage,
+    isLoading,
+    setLoading,
+    error,
+    setError,
+    syncDocuments,
+  } = useChatStore();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  // Sync documents with server on component mount
+  useEffect(() => {
+    syncDocuments();
+  }, [syncDocuments]);
 
   useEffect(() => {
     scrollToBottom();
