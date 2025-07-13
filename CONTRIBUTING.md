@@ -25,17 +25,20 @@ Before contributing, make sure you have:
 ## 🛠️ Development Setup
 
 1. **Fork and clone the repository**
+
    ```bash
    git clone https://github.com/yourusername/pdf-chatbot-assistant.git
    cd pdf-chatbot-assistant
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Set up Ollama**
+
    ```bash
    ollama serve
    ollama pull llama3.2:latest
@@ -43,6 +46,7 @@ Before contributing, make sure you have:
    ```
 
 4. **Start development server**
+
    ```bash
    npm run dev
    ```
@@ -84,16 +88,19 @@ src/
 ### Adding New Features
 
 1. **Create a feature branch**
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
 
 2. **Make your changes**
+
    - Add new functionality
    - Update tests if needed
    - Update documentation
 
 3. **Test your changes**
+
    ```bash
    npm run build
    npm run dev
@@ -111,16 +118,19 @@ src/
 Before submitting a pull request, ensure:
 
 1. **Build passes**
+
    ```bash
    npm run build
    ```
 
 2. **Development server runs**
+
    ```bash
    npm run dev
    ```
 
 3. **AI integration works**
+
    ```bash
    ./test-ai-integration.sh
    ```
@@ -191,19 +201,23 @@ Before submitting a pull request, ensure:
 ## 📋 Pull Request Process
 
 1. **Create a descriptive PR title**
+
    - Use conventional commits format
    - Examples: `feat: add document management`, `fix: resolve PDF parsing issue`
 
 2. **Provide a clear description**
+
    - What changes were made
    - Why the changes were necessary
    - How to test the changes
 
 3. **Link related issues**
+
    - Reference any related GitHub issues
    - Use keywords like "Closes #123"
 
 4. **Ensure CI passes**
+
    - All tests must pass
    - Build must be successful
 

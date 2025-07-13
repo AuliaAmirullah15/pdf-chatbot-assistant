@@ -21,34 +21,38 @@ A modern, AI-powered PDF chatbot assistant built with Next.js, LangChain, Ollama
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - Ollama installed and running
 - Required Ollama models downloaded
 
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/yourusername/pdf-chatbot-assistant.git
    cd pdf-chatbot-assistant
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Set up Ollama**
+
    ```bash
    # Start Ollama service
    ollama serve
-   
+
    # Download required models
    ollama pull llama3.2:latest
    ollama pull nomic-embed-text:latest
    ```
 
 4. **Start the development server**
+
    ```bash
    npm run dev
    ```
@@ -106,8 +110,10 @@ No environment variables are required as the system uses Ollama's default local 
 ### Ollama Configuration
 
 The system expects Ollama to be running on `http://localhost:11434` with these models:
+
 - `llama3.2:latest` - For conversational AI
 - `nomic-embed-text:latest` - For text embeddings
+
 2. **Ollama** installed and running locally
 3. **Llama 3.2** model pulled in Ollama
 

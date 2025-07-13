@@ -49,6 +49,9 @@ next-env.d.ts
 /tmp/
 /temp/
 
+# Medium articles (development documentation)
+/medium-articles/
+
 # Logs
 logs/
 *.log

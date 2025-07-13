@@ -6,6 +6,8 @@ import { Card, CardContent } from "../ui/card";
 import { useChatStore } from "../../store/chat-store";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { tomorrow } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 interface MessageProps {
   message: {
@@ -53,8 +55,8 @@ const Message: React.FC<MessageProps> = ({ message }) => {
                   components={{
                     code({ className, children, ...props }) {
                       return (
-                        <code 
-                          className={`${className} bg-gray-100 rounded px-1 py-0.5 text-sm font-mono`} 
+                        <code
+                          className={`${className} bg-gray-100 rounded px-1 py-0.5 text-sm font-mono`}
                           {...props}
                         >
                           {children}
@@ -115,11 +117,13 @@ export const ChatInterface: React.FC = () => {
     });
 
     try {
+      console.log("Sending message:", userMessage);
+
       // Call the API endpoint
-      const response = await fetch('/api/chat', {
-        method: 'POST',
+      const response = await fetch("/api/chat", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ message: userMessage }),
       });
@@ -127,8 +131,10 @@ export const ChatInterface: React.FC = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Failed to get response');
+        throw new Error(data.error || "Failed to get response");
       }
+
+      console.log("Got response:", data);
 
       // Add assistant response
       addMessage({
@@ -138,7 +144,11 @@ export const ChatInterface: React.FC = () => {
       });
     } catch (error) {
       console.error("Error sending message:", error);
-      setError("Failed to get response. Please try again.");
+      setError(
+        `Failed to get response: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
       addMessage({
         content: "I apologize, but I encountered an error. Please try again.",
         role: "assistant",
