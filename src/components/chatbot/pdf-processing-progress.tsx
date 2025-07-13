@@ -114,17 +114,17 @@ export const PDFProcessingProgress: React.FC<PDFProcessingProgressProps> = ({
         formData.append("file", file);
 
         // Simulate upload progress
-        for (let i = 0; i <= 100; i += 10) {
+        for (let i = 0; i <= 100; i += 20) {
           if (cancelled) return;
           updateStep("upload", { progress: i });
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 50));
         }
 
         if (cancelled) return;
         updateStep("upload", {
           status: "completed",
           progress: 100,
-          duration: 1000,
+          duration: 250,
         });
         setCurrentStepIndex(1);
         currentStepIndexRef.current = 1;
@@ -132,7 +132,7 @@ export const PDFProcessingProgress: React.FC<PDFProcessingProgressProps> = ({
         // Step 2: Validation
         if (cancelled) return;
         updateStep("validation", { status: "processing" });
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        await new Promise((resolve) => setTimeout(resolve, 200));
 
         if (file.type !== "application/pdf") {
           updateStep("validation", {
@@ -155,7 +155,7 @@ export const PDFProcessingProgress: React.FC<PDFProcessingProgressProps> = ({
         if (cancelled) return;
         updateStep("validation", {
           status: "completed",
-          duration: 500,
+          duration: 200,
         });
         setCurrentStepIndex(2);
         currentStepIndexRef.current = 2;
@@ -179,7 +179,7 @@ export const PDFProcessingProgress: React.FC<PDFProcessingProgressProps> = ({
         if (cancelled) return;
         updateStep("extraction", {
           status: "completed",
-          duration: 2000,
+          duration: 1000,
         });
         setCurrentStepIndex(3);
         currentStepIndexRef.current = 3;
@@ -187,12 +187,12 @@ export const PDFProcessingProgress: React.FC<PDFProcessingProgressProps> = ({
         // Step 4: Processing Content
         if (cancelled) return;
         updateStep("processing", { status: "processing" });
-        await new Promise((resolve) => setTimeout(resolve, 1500));
+        await new Promise((resolve) => setTimeout(resolve, 500));
 
         if (cancelled) return;
         updateStep("processing", {
           status: "completed",
-          duration: 1500,
+          duration: 500,
         });
         setCurrentStepIndex(4);
         currentStepIndexRef.current = 4;
@@ -200,12 +200,12 @@ export const PDFProcessingProgress: React.FC<PDFProcessingProgressProps> = ({
         // Step 5: Indexing
         if (cancelled) return;
         updateStep("indexing", { status: "processing" });
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 300));
 
         if (cancelled) return;
         updateStep("indexing", {
           status: "completed",
-          duration: 1000,
+          duration: 300,
         });
 
         // Complete processing

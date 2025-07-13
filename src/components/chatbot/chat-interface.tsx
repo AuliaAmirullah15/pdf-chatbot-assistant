@@ -110,7 +110,7 @@ export const ChatInterface: React.FC = () => {
     setLoading(true);
     setIsTyping(true);
 
-    // Add user message
+    // Add user message immediately
     addMessage({
       content: userMessage,
       role: "user",
@@ -119,15 +119,20 @@ export const ChatInterface: React.FC = () => {
     try {
       console.log("Sending message:", userMessage);
 
-      // Call the API endpoint
+      // Call the API endpoint with timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 60000); // Increased to 60 seconds
+
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ message: userMessage }),
+        signal: controller.signal,
       });
 
+      clearTimeout(timeoutId);
       const data = await response.json();
 
       if (!response.ok) {
@@ -144,11 +149,17 @@ export const ChatInterface: React.FC = () => {
       });
     } catch (error) {
       console.error("Error sending message:", error);
-      setError(
-        `Failed to get response: ${
-          error instanceof Error ? error.message : "Unknown error"
-        }`
-      );
+      let errorMessage = "Unknown error";
+
+      if (error instanceof Error) {
+        if (error.name === "AbortError") {
+          errorMessage = "Request timed out. Please try again.";
+        } else {
+          errorMessage = error.message;
+        }
+      }
+
+      setError(`Failed to get response: ${errorMessage}`);
       addMessage({
         content: "I apologize, but I encountered an error. Please try again.",
         role: "assistant",

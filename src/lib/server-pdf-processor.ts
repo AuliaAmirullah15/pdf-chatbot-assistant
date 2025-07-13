@@ -41,9 +41,9 @@ class ServerPDFProcessor {
     });
 
     this.textSplitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 1000,
-      chunkOverlap: 200,
-      separators: ["\n\n", "\n", ".", "!", "?", ",", " ", ""],
+      chunkSize: 800, // Reduced from 1000 for faster processing
+      chunkOverlap: 100, // Reduced from 200 for speed
+      separators: ["\n\n", "\n", ".", " "], // Simplified separators
     });
 
     // Create data directory if it doesn't exist

@@ -22,7 +22,10 @@ class ServerChatbot {
     this.llm = new Ollama({
       baseUrl: "http://localhost:11434",
       model: "llama3.2:latest",
-      temperature: 0.7,
+      temperature: 0.6,
+      numPredict: 150, // Further reduced for faster responses
+      topP: 0.8, // Optimize for speed
+      repeatPenalty: 1.1,
     });
   }
 
@@ -30,38 +33,18 @@ class ServerChatbot {
     try {
       console.log(`Processing question: ${question}`);
 
-      // Step 1: Retrieve relevant context from uploaded documents
+      // Step 1: Retrieve relevant context from uploaded documents (reduced to 2 for speed)
       const relevantChunks = await serverPDFProcessor.searchSimilarChunks(
         question,
-        5
+        2
       );
       const context = relevantChunks.map((chunk) => chunk.content).join("\n\n");
 
       // Step 2: Generate answer using context
       const contextualPrompt = PromptTemplate.fromTemplate(`
-You are a helpful AI assistant that answers questions based on PDF documents that users have uploaded.
-
-Context from uploaded documents:
-{context}
-
-Previous conversation:
-{conversationHistory}
-
-User question: {question}
-
-Instructions:
-- Provide a clear, accurate, and helpful answer based on the context provided
-- If the question cannot be answered from the context, say so clearly
-- Use information from the context to support your answer
-- Be concise but thorough
-- If no documents have been uploaded, explain that documents need to be uploaded first
-
-Answer:`);
-
-      const conversationHistory = this.conversationHistory
-        .slice(-6) // Keep last 3 exchanges
-        .map((msg) => `${msg.role}: ${msg.content}`)
-        .join("\n");
+Context: {context}
+Question: {question}
+Answer briefly:`);
 
       const chain = RunnableSequence.from([
         contextualPrompt,
@@ -70,19 +53,22 @@ Answer:`);
       ]);
 
       const answer = await chain.invoke({
-        context: context || "No documents have been uploaded yet.",
-        conversationHistory,
+        context: context || "No documents uploaded.",
         question,
       });
 
-      // Step 3: Update conversation history
+      // Step 3: Update conversation history (limit to 4 total messages)
       this.conversationHistory.push({ role: "user", content: question });
       this.conversationHistory.push({ role: "assistant", content: answer });
 
-      // Step 4: Generate sources list
+      // Keep only last 4 messages for efficiency
+      if (this.conversationHistory.length > 4) {
+        this.conversationHistory = this.conversationHistory.slice(-4);
+      }
+
+      // Step 4: Generate sources list (simplified)
       const sources = relevantChunks.map(
-        (chunk, index) =>
-          `Source ${index + 1}: Document chunk ${chunk.metadata.chunkIndex}`
+        (chunk, index) => `Source ${index + 1}`
       );
 
       console.log(
