@@ -9,19 +9,45 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@langchain/community": "^0.3.48",
+    "@langchain/core": "^0.3.62",
+    "@langchain/langgraph": "^0.2.74",
+    "@langchain/ollama": "^0.1.6",
+    "@langchain/textsplitters": "^0.1.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "hnswlib-node": "^3.0.0",
+    "js-tiktoken": "^1.0.20",
+    "katex": "^0.16.22",
+    "langchain": "^0.3.29",
+    "lucide-react": "^0.462.0",
+    "next": "15.3.5",
+    "pdf-parse": "^1.1.1",
+    "pdf2pic": "^3.2.0",
+    "pdfjs-dist": "^4.10.38",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "next": "15.3.5"
+    "react-dropzone": "^14.3.8",
+    "react-markdown": "^9.1.0",
+    "react-pdf": "^9.1.1",
+    "react-syntax-highlighter": "^15.6.1",
+    "rehype-katex": "^7.0.1",
+    "remark-gfm": "^4.0.1",
+    "remark-math": "^6.0.0",
+    "tailwind-merge": "^2.6.0",
+    "zustand": "^5.0.6"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/pdf-parse": "^1.1.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
+    "@types/react-syntax-highlighter": "^15.5.13",
     "eslint": "^9",
     "eslint-config-next": "15.3.5",
-    "@eslint/eslintrc": "^3"
+    "tailwindcss": "^4",
+    "typescript": "^5"
   }
 }

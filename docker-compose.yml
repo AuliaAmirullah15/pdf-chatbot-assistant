@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  pdf-chatbot:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - OLLAMA_MODEL=llama3.2:latest
+    depends_on:
+      - ollama
+    networks:
+      - pdf-chatbot-network
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    command: ["ollama", "serve"]
+    networks:
+      - pdf-chatbot-network
+
+volumes:
+  ollama-data:
+
+networks:
+  pdf-chatbot-network:
+    driver: bridge

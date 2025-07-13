@@ -39,3 +39,78 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Vector stores
+/vector_stores/
+*.index
+*.pkl
+
+# Temporary files
+/tmp/
+/temp/
+
+# Logs
+logs/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+
+# AI and LangChain related
+/data/
+/vector_store/
+*.faiss
+*.chroma
+*.sqlite
+*.db
+
+# Test files
+test-*.txt
+test-*.pdf
+test-*.sh
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Local env files
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# PWA files
+**/public/sw.js
+**/public/workbox-*.js
+**/public/fallback-*.js
+
+# Storybook build outputs
+.out
+.storybook-out
