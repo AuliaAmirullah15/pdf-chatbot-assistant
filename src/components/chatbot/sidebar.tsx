@@ -1,12 +1,29 @@
 import React from "react";
-import { Menu, X, FileText, MessageCircle } from "lucide-react";
+import { Menu, X, FileText, MessageCircle, RefreshCw } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { useChatStore } from "../../store/chat-store";
 import { FileUpload } from "./file-upload";
 export const Sidebar: React.FC = () => {
-  const { sidebarOpen, setSidebarOpen, clearMessages, documents } =
-    useChatStore();
+  const { sidebarOpen, setSidebarOpen, clearAll, documents } = useChatStore();
+  const [isClearing, setIsClearing] = React.useState(false);
+
+  const handleClearAll = async () => {
+    if (
+      window.confirm(
+        "Are you sure you want to start fresh? This will clear all chat history and remove all uploaded documents."
+      )
+    ) {
+      setIsClearing(true);
+      try {
+        await clearAll();
+      } catch (error) {
+        console.error("Failed to clear session:", error);
+      } finally {
+        setIsClearing(false);
+      }
+    }
+  };
 
   if (!sidebarOpen) {
     return (
@@ -100,11 +117,22 @@ export const Sidebar: React.FC = () => {
         <div className="p-4 border-t border-gray-200 flex-shrink-0 bg-gray-50">
           <Button
             variant="outline"
-            onClick={clearMessages}
+            onClick={handleClearAll}
             className="w-full text-sm"
             size="sm"
+            disabled={isClearing}
           >
-            <MessageCircle className="h-4 w-4 mr-2" /> Clear Chat
+            {isClearing ? (
+              <>
+                <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                Clearing...
+              </>
+            ) : (
+              <>
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Start Fresh Session
+              </>
+            )}
           </Button>
         </div>
       </div>

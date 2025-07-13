@@ -30,26 +30,30 @@ export async function DELETE(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const documentId = searchParams.get("id");
 
-    if (!documentId) {
-      return NextResponse.json(
-        { error: "Document ID is required" },
-        { status: 400 }
-      );
+    if (documentId) {
+      // Delete single document
+      const success = await sessionPDFProcessor.deleteDocument(documentId);
+
+      if (!success) {
+        return NextResponse.json(
+          { error: "Document not found" },
+          { status: 404 }
+        );
+      }
+
+      return NextResponse.json({
+        success: true,
+        message: "Document deleted successfully",
+      });
+    } else {
+      // Clear all documents from session
+      await sessionPDFProcessor.clearAllDocuments();
+
+      return NextResponse.json({
+        success: true,
+        message: "All documents cleared successfully",
+      });
     }
-
-    const success = await sessionPDFProcessor.deleteDocument(documentId);
-
-    if (!success) {
-      return NextResponse.json(
-        { error: "Document not found" },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json({
-      success: true,
-      message: "Document deleted successfully",
-    });
   } catch (error) {
     console.error("Error deleting document:", error);
     return NextResponse.json(

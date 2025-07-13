@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Send, Bot, User } from "lucide-react";
+import { Send, Bot, User, RefreshCw } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Card, CardContent } from "../ui/card";
@@ -88,15 +88,18 @@ const Message: React.FC<MessageProps> = ({ message }) => {
 export const ChatInterface: React.FC = () => {
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [isClearing, setIsClearing] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const {
     messages,
+    documents,
     addMessage,
     isLoading,
     setLoading,
     error,
     setError,
     syncDocuments,
+    clearAll,
   } = useChatStore();
 
   const scrollToBottom = () => {
@@ -189,6 +192,23 @@ export const ChatInterface: React.FC = () => {
     }
   };
 
+  const handleStartFresh = async () => {
+    if (
+      window.confirm(
+        "Are you sure you want to start fresh? This will clear all chat history and remove all uploaded documents."
+      )
+    ) {
+      setIsClearing(true);
+      try {
+        await clearAll();
+      } catch (error) {
+        console.error("Failed to clear session:", error);
+      } finally {
+        setIsClearing(false);
+      }
+    }
+  };
+
   return (
     <div className="flex flex-col h-full">
       {/* Messages */}
@@ -260,6 +280,18 @@ export const ChatInterface: React.FC = () => {
             size="icon"
           >
             <Send className="h-4 w-4" />
+          </Button>
+          <Button
+            type="button"
+            onClick={handleStartFresh}
+            size="icon"
+            variant="outline"
+            disabled={isLoading || isClearing}
+            title="Start Fresh Session - Clear all chat history and documents"
+          >
+            <RefreshCw
+              className={`h-4 w-4 ${isClearing ? "animate-spin" : ""}`}
+            />
           </Button>
         </form>
       </div>

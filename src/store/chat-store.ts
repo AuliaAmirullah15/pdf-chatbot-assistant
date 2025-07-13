@@ -51,6 +51,8 @@ interface ChatState {
 
   addMessage: (message: Omit<Message, "id" | "timestamp">) => void;
   clearMessages: () => void;
+  clearDocuments: () => void;
+  clearAll: () => Promise<void>;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
 
@@ -123,6 +125,36 @@ export const useChatStore = create<ChatState>()(
 
       clearMessages: () => {
         set({ messages: [] });
+      },
+
+      clearDocuments: () => {
+        set({ documents: [], currentDocument: null });
+      },
+
+      clearAll: async () => {
+        try {
+          // First, clear local state immediately for better UX
+          set({
+            messages: [],
+            documents: [],
+            currentDocument: null,
+            error: null,
+          });
+
+          // Then clear all documents on the server
+          const response = await fetch("/api/documents", {
+            method: "DELETE",
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to clear session on server");
+          }
+
+          // No need to sync here - we want to stay cleared!
+        } catch (error) {
+          console.error("Failed to clear session:", error);
+          set({ error: "Failed to clear session" });
+        }
       },
 
       setLoading: (loading) => {

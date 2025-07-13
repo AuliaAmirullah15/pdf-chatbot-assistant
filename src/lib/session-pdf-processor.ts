@@ -150,6 +150,7 @@ class SessionPDFProcessor {
     const session = await sessionManager.getOrCreateSession();
     session.documents.clear();
     session.vectorStore = null;
+    session.chatHistory = []; // Also clear chat history from session
   }
 
   private async rebuildVectorStore(session: SessionData): Promise<void> {
