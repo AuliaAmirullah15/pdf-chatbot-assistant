@@ -66,7 +66,8 @@ export const useChatStore = create<ChatState>()(
       messages: [],
       isLoading: false,
       error: null,
-      sidebarOpen: true,
+      sidebarOpen:
+        typeof window !== "undefined" ? window.innerWidth >= 768 : true,
 
       // Document actions
       addDocument: (document) => {

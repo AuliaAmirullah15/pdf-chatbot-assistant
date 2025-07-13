@@ -95,7 +95,7 @@ export const PDFProcessingProgress: React.FC<PDFProcessingProgressProps> = ({
 
   useEffect(() => {
     let cancelled = false;
-    
+
     const processFile = async () => {
       if (isProcessingRef.current || cancelled) {
         return; // Prevent multiple simultaneous uploads
@@ -284,20 +284,23 @@ export const PDFProcessingProgress: React.FC<PDFProcessingProgressProps> = ({
   const timeRemaining = Math.max(0, estimatedTotal - elapsedTime);
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
-      <CardContent className="p-6">
+    <Card className="w-full max-h-96 overflow-hidden">
+      <CardContent className="p-4">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <File className="w-6 h-6 text-blue-600" />
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-start space-x-3 min-w-0 flex-1 mr-2">
+            <div className="p-2 bg-blue-100 rounded-lg flex-shrink-0">
+              <File className="w-4 h-4 text-blue-600" />
             </div>
-            <div>
-              <h3 className="text-lg font-semibold text-gray-800">
-                Processing PDF Document
+            <div className="min-w-0 flex-1">
+              <h3 className="text-sm font-semibold text-gray-800 mb-1">
+                Processing PDF
               </h3>
-              <p className="text-sm text-gray-600">
-                {file.name} • {(file.size / 1024 / 1024).toFixed(1)} MB
+              <p className="text-xs text-gray-600 truncate" title={file.name}>
+                {file.name}
+              </p>
+              <p className="text-xs text-gray-500">
+                {(file.size / 1024 / 1024).toFixed(1)} MB
               </p>
             </div>
           </div>
@@ -305,20 +308,18 @@ export const PDFProcessingProgress: React.FC<PDFProcessingProgressProps> = ({
             variant="outline"
             size="sm"
             onClick={onCancel}
-            className="text-gray-600 hover:text-gray-800"
+            className="text-gray-600 hover:text-gray-800 flex-shrink-0 text-xs px-2 py-1"
           >
             Cancel
           </Button>
         </div>
 
         {/* Overall Progress */}
-        <div className="mb-6">
+        <div className="mb-4">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-medium text-gray-700">
-              Overall Progress
-            </span>
-            <span className="text-sm text-gray-500">
-              {completedSteps} of {totalSteps} steps completed
+            <span className="text-sm font-medium text-gray-700">Progress</span>
+            <span className="text-xs text-gray-500">
+              {completedSteps}/{totalSteps}
             </span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
@@ -328,19 +329,19 @@ export const PDFProcessingProgress: React.FC<PDFProcessingProgressProps> = ({
             />
           </div>
           <div className="flex justify-between text-xs text-gray-500 mt-1">
-            <span>Elapsed: {Math.round(elapsedTime)}s</span>
+            <span>{Math.round(elapsedTime)}s</span>
             {timeRemaining > 0 && (
-              <span>Est. remaining: {Math.round(timeRemaining)}s</span>
+              <span>~{Math.round(timeRemaining)}s left</span>
             )}
           </div>
         </div>
 
         {/* Processing Steps */}
-        <div className="space-y-4">
+        <div className="space-y-2 max-h-48 overflow-y-auto pr-2">
           {steps.map((step, index) => (
             <div
               key={step.id}
-              className={`flex items-start space-x-4 p-4 rounded-lg border transition-all duration-300 ${getStepStatusColor(
+              className={`flex items-start space-x-3 p-3 rounded-md border transition-all duration-300 ${getStepStatusColor(
                 step
               )}`}
             >
@@ -350,15 +351,20 @@ export const PDFProcessingProgress: React.FC<PDFProcessingProgressProps> = ({
 
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-sm font-medium">{step.title}</h4>
+                  <h4 className="text-sm font-medium truncate">{step.title}</h4>
                   {step.duration && (
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-gray-500 ml-2 flex-shrink-0">
                       {step.duration}ms
                     </span>
                   )}
                 </div>
 
-                <p className="text-sm text-gray-600 mt-1">{step.description}</p>
+                <p
+                  className="text-xs text-gray-600 mt-0.5 truncate"
+                  title={step.description}
+                >
+                  {step.description}
+                </p>
 
                 {step.status === "processing" &&
                   step.progress !== undefined && (
@@ -376,10 +382,12 @@ export const PDFProcessingProgress: React.FC<PDFProcessingProgressProps> = ({
                   )}
 
                 {step.status === "error" && step.errorMessage && (
-                  <div className="mt-2 p-2 bg-red-100 border border-red-200 rounded text-sm text-red-700">
-                    <div className="flex items-center space-x-2">
-                      <AlertCircle className="w-4 h-4" />
-                      <span>{step.errorMessage}</span>
+                  <div className="mt-2 p-2 bg-red-100 border border-red-200 rounded text-xs text-red-700">
+                    <div className="flex items-center space-x-1">
+                      <AlertCircle className="w-3 h-3 flex-shrink-0" />
+                      <span className="truncate" title={step.errorMessage}>
+                        {step.errorMessage}
+                      </span>
                     </div>
                   </div>
                 )}
@@ -390,16 +398,14 @@ export const PDFProcessingProgress: React.FC<PDFProcessingProgressProps> = ({
 
         {/* Success Message */}
         {completedSteps === totalSteps && (
-          <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+          <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-md">
             <div className="flex items-center space-x-2">
-              <CheckCircle className="w-5 h-5 text-green-600" />
+              <CheckCircle className="w-4 h-4 text-green-600" />
               <div>
-                <h4 className="text-sm font-medium text-green-800">
-                  Document processed successfully!
-                </h4>
-                <p className="text-sm text-green-700 mt-1">
-                  Your PDF has been indexed and is ready for questions.
-                  Processing completed in {Math.round(elapsedTime)} seconds.
+                <h4 className="text-sm font-medium text-green-800">Success!</h4>
+                <p className="text-xs text-green-700 mt-0.5">
+                  PDF indexed in {Math.round(elapsedTime)}s. Ready for
+                  questions!
                 </p>
               </div>
             </div>
