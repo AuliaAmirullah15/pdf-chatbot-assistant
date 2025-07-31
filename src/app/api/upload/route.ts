@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { sessionPDFProcessor } from "../../../lib/session-pdf-processor";
+import { serverPDFProcessor } from "../../../lib/server-pdf-processor";
 
 export async function POST(request: NextRequest) {
   try {
@@ -30,14 +30,22 @@ export async function POST(request: NextRequest) {
     // Convert file to buffer
     const buffer = Buffer.from(await file.arrayBuffer());
 
-    // Process the PDF using the session-based processor
-    const result = await sessionPDFProcessor.uploadPDF(buffer, file.name);
+    // Process the PDF using the server-side processor
+    // Create a File-like object for processPDF
+    const fileLike = {
+      name: file.name,
+      size: file.size,
+      arrayBuffer: async () => buffer,
+    } as unknown as File;
 
-    if (!result.success) {
+    let document;
+    try {
+      document = await serverPDFProcessor.processPDF(fileLike);
+    } catch (error) {
       return NextResponse.json(
         {
           error: "Failed to process PDF",
-          details: result.error,
+          details: error instanceof Error ? error.message : String(error),
         },
         { status: 500 }
       );
@@ -46,9 +54,9 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       document: {
-        id: result.document!.id,
-        name: result.document!.name,
-        metadata: result.document!.metadata,
+        id: document.id,
+        name: document.name,
+        metadata: document.metadata,
       },
     });
   } catch (error) {

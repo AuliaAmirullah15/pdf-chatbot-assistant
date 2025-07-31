@@ -34,6 +34,8 @@ class ServerPDFProcessor {
   private vectorStore: MemoryVectorStore | null = null;
   private vectorStorePath: string;
 
+  private persistPath = join(process.cwd(), "data", "vector_store.json");
+
   constructor() {
     this.embeddings = new OllamaEmbeddings({
       baseUrl: "http://localhost:11434",
@@ -50,6 +52,20 @@ class ServerPDFProcessor {
     this.vectorStorePath = join(process.cwd(), "data", "vector_store");
     if (!existsSync(join(process.cwd(), "data"))) {
       mkdirSync(join(process.cwd(), "data"), { recursive: true });
+    }
+
+    this.loadPersisted();
+  }
+
+  private persist() {
+    const docs = Array.from(this.documents.values());
+    writeFileSync(this.persistPath, JSON.stringify({ docs }), "utf-8");
+  }
+
+  private loadPersisted() {
+    if (existsSync(this.persistPath)) {
+      const { docs } = JSON.parse(readFileSync(this.persistPath, "utf-8"));
+      this.documents = new Map(docs.map((d: any) => [d.id, d]));
     }
   }
 
@@ -72,6 +88,7 @@ class ServerPDFProcessor {
 
       // Store document
       this.documents.set(document.id, document);
+      this.persist();
 
       // Process text into chunks
       const chunks = await this.createChunks(document);
