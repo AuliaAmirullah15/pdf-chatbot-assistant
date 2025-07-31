@@ -43,8 +43,9 @@ class ServerChatbot {
       // Step 2: Generate answer using context
       const contextualPrompt = PromptTemplate.fromTemplate(`
 Context: {context}
+Answer the user's question concisely, using only the context above. Do not repeat or restate the question in your answer.
 Question: {question}
-Answer briefly:`);
+Answer:`);
 
       const chain = RunnableSequence.from([
         contextualPrompt,
